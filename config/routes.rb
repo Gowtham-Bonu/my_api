@@ -3,10 +3,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  get "/api/v1/articles/search/:title", to: "api/v1/articles#search"
-  get "/api/v1/comments/search/:comment", to: "api/v1/comments#search"
   namespace "api" do
     namespace "v1" do
+      get "search/:title", to: "articles#search"
+      get "search_comments/:comment", to: "comments#search"
       resources :articles do
         get '/page/:page', action: :index, on: :collection
         resources :comments do
