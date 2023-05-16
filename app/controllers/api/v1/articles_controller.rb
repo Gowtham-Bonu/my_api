@@ -15,27 +15,30 @@ module Api
       def create
         @article = Article.new(article_params)
         if @article.save
-          render json: @article
+          render json: @article, status: :created
         else
-          render json: {status: 'ERROR', message: 'article is not created', data: @article.errors}, status: :unprocessable_entitiy
+          render json: @article.errors, status: :unprocessable_entitiy
         end
       end
 
       def update
         if @article.update(article_params)
-          render json: @article
+          render json: @article, status: :ok
         else
-          render json: {status: 'ERROR', message: 'article is not updated', data: @article.errors}, status: :unprocessable_entitiy
+          render json: @article.errors, status: :unprocessable_entitiy
         end
       end
 
       def destroy
-        @article.destroy
-        render json: @article
+        if @article.destroy
+          render json: @article, status: :ok
+        else
+          render json: @article.errors, status: :ok
+        end
       end
 
       def search
-        @article = Article.find_by(title: params[:title].strip)
+        @article = Article.where('title LIKE ?', "%#{params[:title].strip}%")
         render json: @article
       end
       

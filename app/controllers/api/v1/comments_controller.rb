@@ -16,23 +16,26 @@ module Api
       def create
         @comment = Comment.new(comment_params)
         if @comment.save
-          render json: @comment
+          render json: @comment, status: :created
         else
-          render json: {status: 'ERROR', message: 'comment is not posted', data: @comment.errors}, status: :unprocessable_entitiy
+          render json: @comment.errors, status: :unprocessable_entitiy
         end
       end
 
       def update
         if @comment.update(comment_params)
-          render json: @comment
+          render json: @comment, status: :ok
         else
-          render json: {status: 'ERROR', message: 'comment is not updated', data: @comment.errors}, status: :unprocessable_entitiy
+          render json: @comment.errors, status: :unprocessable_entitiy
         end
       end
 
       def destroy
-        @comment.destroy
-        render json: @comment
+        if @comment.destroy
+          render json: @comment, status: :ok
+        else
+          render json: @comment.errors, status: :unprocessable_entitiy
+        end
       end
 
       def search
