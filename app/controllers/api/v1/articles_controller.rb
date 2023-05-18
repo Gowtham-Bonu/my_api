@@ -33,12 +33,12 @@ module Api
         if @article.destroy
           render json: @article, status: :ok
         else
-          render json: @article.errors, status: :ok
+          render json: @article.errors, status: :bad_request
         end
       end
 
       def search
-        @article = Article.where('title LIKE ?', "%#{params[:title].strip}%")
+        @article = Article.where('title LIKE ?', "%#{params[:title].strip}%").page params[:page]
         render json: @article
       end
       

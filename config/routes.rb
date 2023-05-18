@@ -5,11 +5,11 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace "api" do
     namespace "v1" do
-      get "search/:title", to: "articles#search"
-      get "search_comments/:comment", to: "comments#search"
       resources :articles do
+        get 'search', on: :collection
         get '/page/:page', action: :index, on: :collection
         resources :comments do
+          get 'search', on: :collection
           get '/page/:page', action: :index, on: :collection
         end
       end

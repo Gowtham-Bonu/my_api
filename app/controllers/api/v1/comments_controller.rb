@@ -1,11 +1,11 @@
 module Api
   module V1
     class CommentsController < ApplicationController
-      before_action :get_article, only: [:index]
+      before_action :get_article, only: [:index, :create]
       before_action :get_comment, only: [:show, :update, :destroy]
 
       def index
-        @comments = @article.comments
+        @comments = @article.comments.page params[:page]
         render json: @comments
       end
 
@@ -14,7 +14,7 @@ module Api
       end
 
       def create
-        @comment = Comment.new(comment_params)
+        @comment = @article.comments.build(comment_params)
         if @comment.save
           render json: @comment, status: :created
         else
@@ -39,7 +39,7 @@ module Api
       end
 
       def search
-        @comments = Comment.where('description LIKE ?', "%#{params[:comment].strip}%")
+        @comments = Comment.where('description LIKE ?', "%#{params[:comment].strip}%").page params[:page]
         render json: @comments
       end 
         
@@ -54,7 +54,7 @@ module Api
       end
 
       def comment_params
-        params.require(:comment).permit(:description, :date_of_comment, :article_id)
+        params.require(:comment).permit(:description, :date_of_comment)
       end
     end
   end
